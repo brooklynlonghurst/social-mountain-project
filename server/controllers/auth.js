@@ -46,7 +46,20 @@ module.exports = {
         }
     }, 
 
-    login: (req, res) => {
-        console.log('logout')
+    login: async (req, res) => {
+        try {
+            const {username, password} = req.body
+            let foundUser = await User.findOne({where: {username}})
+            if (foundUser) {
+                const isAuthenticated = bcrypt.compareSync(password, foundUser.hashedPass)
+
+                if(isAuthenticated) {
+                    const token = createToken(foundUser.dataValues.username, foundUser.dataValues.id)
+                }
+            }
+        }
+        catch (error) {
+            console.log(error)
+        }
     }
 }
