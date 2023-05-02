@@ -1,3 +1,5 @@
+
+
 module.exports = {
 
     getAllPosts: (req, res) => {
@@ -22,5 +24,5 @@ module.exports = {
     
     deletePost: (req, res) => {
         console.log('delete post')
-    }
+    } 
 }
