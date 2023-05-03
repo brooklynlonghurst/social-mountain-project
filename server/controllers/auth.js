@@ -1,8 +1,9 @@
 require('dotenv').config()
 const {SECRET} = process.env
-const {User} = ('../models/user')
-const bcrypt = require('bcrypt')
+const {User} = require('../models/user')
+const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+
 
 function createToken(username, id) {
     return jwt.sign(
@@ -16,12 +17,13 @@ function createToken(username, id) {
         }
     )
 }
+console.log(User)
 
 module.exports = {
     register: async (req, res) => {
         try {
             const {username, password} = req.body
-            foundUser = await User.findOne({where: {username: username}})
+            let foundUser = await User.findOne({where: {username: username}})
             if (foundUser){
                 res.status(400).send('cannot create user')
             } else {
@@ -41,7 +43,7 @@ module.exports = {
         }
         catch (error) {
             console.log('ERROR IN register')
-            console.log(err)
+            console.log(error)
             res.sendStatus(400)
         }
     }, 
@@ -55,11 +57,24 @@ module.exports = {
 
                 if(isAuthenticated) {
                     const token = createToken(foundUser.dataValues.username, foundUser.dataValues.id)
+                    const exp = Date.now() + 1000 * 60 * 60 * 48
+                    res.status(200).send({
+                        username: foundUser.dataValues.username,
+                        userId: foundUser.dataValues.id,
+                        token,
+                        exp
+                    })
+                } else {
+                    res.status(400).send('cannot log in')
                 }
+            } else {
+                res.status(400).send('cannot log in')
             }
         }
         catch (error) {
+            console.log('ERROR IN register')
             console.log(error)
+            res.sendStatus(400)
         }
     }
 }

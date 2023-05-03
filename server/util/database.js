@@ -11,4 +11,6 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
     }
 })
 
-export default sequelize
+module.exports = {
+    sequelize
+}

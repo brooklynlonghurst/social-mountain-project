@@ -8,23 +8,28 @@ const Auth = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [register, setRegister] = useState(true)
+    const [message, setMessage] = useState('')
+    const [display, setDisplay] = useState('none')
  
     const submitHandler = e => {
         e.preventDefault()
         
+        setDisplay('none')
+
         const body = {
-                username,
-                password
+            username,
+            password
         }
 
-        const url = 'https://socialmtn.devmountain.com'
+        // const url = 'http://localhost:4000'
 
-        axios.post(register ? `${url}/register` : `${url}/login`, body)
+        axios.post(register ? `/register` : `/login`, body)
                 .then((res) => {
                     console.log('AFTER AUTH', res.data)
                     authCtx.login(res.data.token, res.data.exp, res.data.userId)
                 }).catch((err) => {
-                    console.log(err)
+                    setMessage(err.response.data)
+                    setDisplay('block')
                     setPassword('')
                     setUsername('')
                 })
@@ -52,7 +57,8 @@ const Auth = () => {
                     {register ? 'Sign Up' : 'Login'}
                 </button>
             </form>
-            <button className='form-btn'>Need to {register ? 'Login' : 'Sign Up'}?</button>
+            <p style={{display: display}} className='auth-msg'>{message}</p>
+            <button className='form-btn' onClick={() => setRegister(!register)}>Need to {register ? 'Login' : 'Sign Up'}?</button>
         </main>
     )
 }
