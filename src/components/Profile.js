@@ -47,6 +47,7 @@ const Profile = () => {
     }
 
     const mappedPosts = posts.map(post => {
+        console.log(userId)
         return (
             <div key={post.id} className='post-card'>
                 <h2>{post.title}</h2>
